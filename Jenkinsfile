@@ -7,7 +7,7 @@ pipeline{
                 label 'agent-1'
             }
             steps{
-                git url:"https://github.com/dhruvjain-github/two-tier-flask-app.git"
+                git url:"https://github.com/dhruvjain-github/jenkins-flask-app.git"
             }
         }
         
@@ -21,12 +21,12 @@ pipeline{
                 {
                     sh '''
                     docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-                   
-                    docker build -t $DOCKER_USERNAME/two-tier-flask-app:latest .
+
+                    docker build -t $DOCKER_USERNAME/jenkins-flask-app:latest .
                     echo "$DOCKER_USERNAME"
                     echo "Build completed"
-                    docker push $DOCKER_USERNAME/two-tier-flask-app:latest
-                    
+                    docker push $DOCKER_USERNAME/jenkins-flask-app:latest
+
                     '''
                     
                 }
@@ -43,7 +43,7 @@ pipeline{
                 {
                     sh '''
                     docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-                    docker pull $DOCKER_USERNAME/two-tier-flask-app:latest
+                    docker pull $DOCKER_USERNAME/jenkins-flask-app:latest
                     docker compose up -d
                     docker ps
                     '''

@@ -1,27 +1,75 @@
  
-# Flask App with MySQL Docker Setup
+# Jenkins Pipeline Test Application
 
-This is a simple Flask app that interacts with a MySQL database. The app allows users to submit messages, which are then stored in the database and displayed on the frontend .
+This is a temporary Flask application with MySQL database used for testing Jenkins CI/CD pipeline functionality. The application serves as a simple two-tier architecture to demonstrate automated build, push, and deployment processes using Jenkins.
+
+## Jenkins Pipeline Overview
+
+This project includes a Jenkins pipeline (`Jenkinsfile`) with Git SCM integration that automates:
+
+1. **Clone Stage**: Pulls code from the GitHub repository
+2. **Build and Push Stage**: Builds Docker image and pushes to DockerHub
+3. **Pull and Deploy Stage**: Pulls the image on a different agent and deploys using docker-compose
+
+### Key Features:
+- **Automatic Triggering**: Pipeline automatically builds whenever code is pushed to the repository
+- **Git SCM Integration**: Integrated with GitHub for seamless CI/CD workflow
+- **Email Notifications**: Sends email alerts when pipeline fails
+- **Multi-Agent Deployment**: Uses two Jenkins agents (`agent-1` and `agent-2`) to simulate real-world CI/CD workflow
 
 ## Prerequisites
 
-Before you begin, make sure you have the following installed:
+Before you begin, make sure you have the following installed and configured:
 
 - Docker
+- Jenkins with configured agents (agent-1 and agent-2)
+- DockerHub credentials configured in Jenkins
+- Git SCM integration configured in Jenkins
+- Email server configuration for failure notifications
 - Git (optional, for cloning the repository)
 
-## Setup
+## Jenkins Pipeline Setup
 
-1. Clone this repository (if you haven't already):
+1. Configure Jenkins with two agents labeled `agent-1` and `agent-2`
+
+2. Add DockerHub credentials to Jenkins:
+   - Go to Jenkins → Manage Jenkins → Manage Credentials
+   - Add a Username/Password credential with ID: `DockerHub Credentials`
+
+3. Configure Git SCM Integration:
+   - Install Git plugin and GitHub plugin in Jenkins
+   - Configure webhook in GitHub repository pointing to your Jenkins instance
+   - Set up polling SCM or webhook triggers for automatic builds
+
+4. Configure Email Notifications:
+   - Go to Jenkins → Manage Jenkins → Configure System
+   - Set up SMTP server details for email notifications
+   - Configure email recipients for build failure notifications
+
+5. Create a new Jenkins Pipeline job:
+   - Point it to this repository: `https://github.com/dhruvjain-github/jenkins-flask-app.git`
+   - Enable "GitHub hook trigger for GITScm polling" or configure polling schedule
+   - Set up post-build actions for email notifications on failure
+
+6. The pipeline will automatically:
+   - **Trigger on Push**: Automatically start when code is pushed to the repository
+   - Clone the repository on agent-1
+   - Build and push Docker image to DockerHub
+   - Pull and deploy the application on agent-2
+   - **Send Email on Failure**: Notify configured recipients if any stage fails
+
+## Manual Setup (Alternative)
+
+1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/dhruvjain-github/jenkins-flask-app.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd your-repo-name
+   cd jenkins-flask-app
    ```
 
 3. Create a `.env` file in the project directory to store your MySQL environment variables:
@@ -39,7 +87,7 @@ Before you begin, make sure you have the following installed:
    MYSQL_DB=your_database
    ```
 
-## Usage
+## Application Usage (For Testing)
 
 1. Start the containers using Docker Compose:
 
@@ -118,14 +166,34 @@ docker run -d \
 
 ## Notes
 
-- Make sure to replace placeholders (e.g., `your_username`, `your_password`, `your_database`) with your actual MySQL configuration.
+- **This is a temporary testing application** created specifically for Jenkins pipeline testing purposes.
 
-- This is a basic setup for demonstration purposes. In a production environment, you should follow best practices for security and performance.
+- **Automatic CI/CD**: The pipeline automatically triggers on every git push, demonstrating continuous integration and deployment.
 
-- Be cautious when executing SQL queries directly. Validate and sanitize user inputs to prevent vulnerabilities like SQL injection.
+- **Email Notifications**: Configured to send email alerts to designated recipients when pipeline fails, ensuring quick response to issues.
 
-- If you encounter issues, check Docker logs and error messages for troubleshooting .
-- this is just for test purpose.
+- The application uses hardcoded MySQL credentials (root/admin) which is acceptable for testing but should never be used in production.
+
+- This setup demonstrates a complete CI/CD workflow: **Code Push → Auto Build → Push to Registry → Deploy → Notify on Failure**.
+
+- The pipeline is configured to work with the repository: `https://github.com/dhruvjain-github/jenkins-flask-app.git`
+
+- **Git SCM Integration**: Seamlessly integrates with GitHub for webhook-based or polling-based automatic builds.
+
+- For production environments, implement proper security practices, environment-specific configurations, comprehensive testing stages, and secure notification methods.
+
+- If you encounter issues during pipeline execution, check Jenkins logs, Docker container logs, and email configuration for troubleshooting.
+
+## Testing Purpose Only
+
+⚠️ **Important**: This application is created solely for testing Jenkins pipeline functionality with Git SCM integration and automated email notifications. It should not be used in production environments.
+
+### Pipeline Features Demonstrated:
+- ✅ Git SCM Integration (Auto-trigger on push)
+- ✅ Multi-stage CI/CD Pipeline
+- ✅ Docker Image Build & Push
+- ✅ Multi-Agent Deployment
+- ✅ Email Notifications on Failure
 
 ```
 
